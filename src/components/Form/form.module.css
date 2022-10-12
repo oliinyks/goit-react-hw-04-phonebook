@@ -1,0 +1,25 @@
+.label {
+  display: block;
+  margin-bottom: 10px;
+}
+.input {
+  display: block;
+  width: 100%;
+  margin-bottom: 30px;
+  border: 1px solid black;
+  border-radius: 20px;
+  padding: 10px;
+}
+.button {
+  margin: 10px 0 20px;
+  padding: 10px 15px;
+  border: 1px solid black;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 250ms cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+.button:hover,
+.button:focus {
+  background-color: rgb(76, 75, 75);
+  color: white;
+}

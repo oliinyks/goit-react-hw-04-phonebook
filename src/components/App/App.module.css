@@ -1,0 +1,13 @@
+.phonebook {
+	width: 50%;
+	margin: 120px auto;
+ }
+ .title {
+	text-align: center;
+	margin-bottom: 60px;
+	color: rgb(76, 75, 75);
+ }
+ .subtitle {
+	font-size: 20px;
+ }
+ 
