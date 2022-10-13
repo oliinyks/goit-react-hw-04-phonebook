@@ -1,47 +1,29 @@
-import React from 'react';
-import { nanoid } from 'nanoid';
+import { useState, useEffect } from 'react';
 import Notiflix from 'notiflix';
-
 import Form from 'components/Form';
 import ContactList from 'components/ContactList';
 import Filter from 'components/Filter';
-
+import useLocalSorage from '../../hooks/useLocalStorage';
 import css from './App.module.css';
 
-class App extends React.Component {
-  state = {
-    contacts: [],
-    filter: '',
-  };
+export default function App() {
+  const [contacts, setContacts] =  useLocalSorage();
+  const [filter, setFilter] = useState('');
 
-  formSubmitHandler = ({ name, number }) => {
-    const newContact = {
-      id: nanoid(),
-      name,
-      number,
-    };
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
 
-    const filter = this.state.contacts.filter(
-      ({ name }) => name.toLowerCase() === newContact.name.toLowerCase()
-    );
-
-    if (filter.length) {
-      Notiflix.Notify.failure('You already have a contact with that name');
-      return;
-    }
-
-    this.setState(({ contacts }) => ({
-      contacts: [...contacts, newContact],
-    }));
+  const formSubmitHandler = newContact => {
+	setContacts(prevState => [...prevState, newContact]);
     Notiflix.Notify.success('You have just created a new contact');
   };
 
-  changeFilter = e => {
-    this.setState({ filter: e.currentTarget.value });
+  const changeFilter = e => {
+    setFilter(e.currentTarget.value);
   };
 
-  getVisibleContacts = () => {
-    const { filter, contacts } = this.state;
+  const getVisibleContacts = () => {
     const normalizedFilter = filter.toLowerCase();
 
     return contacts.filter(contact =>
@@ -49,50 +31,32 @@ class App extends React.Component {
     );
   };
 
-  deleteContact = contactId => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(({ id }) => id !== contactId),
-    }));
+  const deleteContact = contactId => {
+    setContacts(prevState =>
+      prevState.filter(({ id }) => id !== contactId)
+    );
     Notiflix.Notify.success('You have just deleted a contact');
   };
-  componentDidMount() {
-	const parsedContact = JSON.parse(localStorage.getItem('contacts'));
-  if(parsedContact){
-	  this.setState({contacts: parsedContact})	
-  }
-  }
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.contacts !== prevState.contacts) {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
-  }
+  
+  const contactsName = contacts.map(contact => contact.name);
 
-  render() {
-    const { filter, contacts } = this.state;
-    const visibleContacts = this.getVisibleContacts();
+  return (
+    <section className={css.phonebook}>
+      <h1 className={css.title}>Your amazing phonebook</h1>
+      <Form onSubmit={formSubmitHandler} contactsName={contactsName}/>
 
-    return (
-      <section className={css.phonebook}>
-        <h1 className={css.title}>Your amazing phonebook</h1>
-        <Form onSubmit={this.formSubmitHandler} />
-
-        <h2 className={css.subtitle}>Contacts</h2>
-        {contacts.length > 0 ? (
-          <>
-            <Filter
-              onFilterChange={this.changeFilter}
-              filterContacts={filter}
-            />
-            <ContactList
-              contactsList={visibleContacts}
-              onDeleteContact={this.deleteContact}
-            />
-          </>
-        ) : (
-          <p className={css.text}>You have no contacts</p>
-        )}
-      </section>
-    );
-  }
+      <h2 className={css.subtitle}>Contacts</h2>
+      {contacts.length > 0 ? (
+        <>
+          <Filter onFilterChange={changeFilter} filterContacts={filter} />
+          <ContactList
+            contactsList={getVisibleContacts()}
+            onDeleteContact={deleteContact}
+          />
+        </>
+      ) : (
+        <p className={css.text}>You have no contacts</p>
+      )}
+    </section>
+  );
 }
-export default App;

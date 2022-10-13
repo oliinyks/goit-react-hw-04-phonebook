@@ -5,7 +5,8 @@ import css from './filter.module.css';
 
 const nameFilterId = nanoid();
 
-const Filter = ({ filter, onFilterChange }) => (
+export default function Filter({ filter, onFilterChange }){
+	return(
   <>
     <label className={css.label} htmlFor={nameFilterId}>
       Find contacts by name
@@ -18,10 +19,10 @@ const Filter = ({ filter, onFilterChange }) => (
       onChange={onFilterChange}
     />
   </>
-);
+	)
+}
 
 Filter.propTypes = {
 	onFilterChange: PropTypes.func.isRequired,
 };
 
-export default Filter;
