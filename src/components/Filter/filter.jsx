@@ -5,7 +5,7 @@ import css from './filter.module.css';
 
 const nameFilterId = nanoid();
 
-export default function Filter({ filter, onFilterChange }){
+export default function Filter({ filterContacts, onFilterChange }){
 	return(
   <>
     <label className={css.label} htmlFor={nameFilterId}>
@@ -14,7 +14,7 @@ export default function Filter({ filter, onFilterChange }){
     <input
       className={css.input}
       type="text"
-      value={filter}
+      value={filterContacts}
       id={nameFilterId}
       onChange={onFilterChange}
     />
@@ -24,5 +24,6 @@ export default function Filter({ filter, onFilterChange }){
 
 Filter.propTypes = {
 	onFilterChange: PropTypes.func.isRequired,
+	filterContacts: PropTypes.string.isRequired
 };
 
